@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7375300254124163956, guid: 3d93b454fa0cbd2469732a7f7b126cc3, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 8528f4455a457964987264f4cca3f82f, type: 2}
     - target: {fileID: 7425414292729943622, guid: 3d93b454fa0cbd2469732a7f7b126cc3, type: 3}
       propertyPath: m_Name
       value: Entity
@@ -84,12 +88,19 @@ MonoBehaviour:
   EvasionMultiplier: 5
   CohesionMultiplier: 2
   SeparationMultiplier: 1
+  Animator: {fileID: 1283807659490014150}
   LayerMask:
     serializedVersion: 2
     m_Bits: 64
   SelectionObj: {fileID: 8614071907632956014}
   flock: {fileID: 11400000, guid: 865267050b45b204caadb7052521c621, type: 2}
+  ShowGizmos: 0
   collider: {fileID: 8614071908750387023}
+--- !u!95 &1283807659490014150 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7375300254124163956, guid: 3d93b454fa0cbd2469732a7f7b126cc3, type: 3}
+  m_PrefabInstance: {fileID: 8614071908255183026}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8614071907632956014 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1562047196, guid: 3d93b454fa0cbd2469732a7f7b126cc3, type: 3}

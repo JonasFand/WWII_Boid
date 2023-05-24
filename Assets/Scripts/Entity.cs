@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class Entity : MonoBehaviour
     public float EvasionMultiplier = 1;
     public float CohesionMultiplier = 1;
     public float SeparationMultiplier = 1;
+    public Animator Animator;
     
     
     public LayerMask LayerMask;
@@ -23,13 +25,14 @@ public class Entity : MonoBehaviour
     [SerializeField]private GameObject SelectionObj;
 
     public EntityListObj flock;
+    public bool ShowGizmos;
     private Vector3 averageFlockPosition;
     [SerializeField] private CapsuleCollider collider;
 
     private void Start()
     {
         flock.entities.Add(this);
-        Checkpoint = new Vector3(10, 0, 5);
+        Checkpoint = new Vector3(0, 0, 0);
     }
 
     private void Update()
@@ -76,7 +79,13 @@ public class Entity : MonoBehaviour
         
         if (Velocity.magnitude > 0) 
         {
+            Animator.SetBool("Walking", true);
             transform.position += Velocity * Time.deltaTime;
+            transform.rotation = Quaternion.FromToRotation(transform.forward, transform.forward+Velocity);
+        }
+        else
+        {
+            Animator.SetBool("Walking", false);
         }
     }
 
@@ -167,15 +176,19 @@ public class Entity : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(Position,NeighborhoodRadius);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(Position,SeparationRadius);
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(Position,Position+Velocity);
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawLine(Position,Position+(averageFlockPosition - Position));
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(averageFlockPosition,0.25f);
+        if (ShowGizmos)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(Position, NeighborhoodRadius);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(Position, SeparationRadius);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(Position, Position + Velocity);
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawLine(Position, Position + (averageFlockPosition - Position));
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(averageFlockPosition,0.25f);
+        }
+        
     }
 }

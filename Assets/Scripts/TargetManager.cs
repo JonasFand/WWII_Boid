@@ -9,7 +9,7 @@ public class TargetManager : MonoBehaviour
     private Camera _camera;
     public LayerMask mask;
     public LayerMask entityMask;
-    public List<Entity> Selected;
+    public HashSet<Entity> Selected = new HashSet<Entity>();
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 checkPoint;
@@ -21,7 +21,7 @@ public class TargetManager : MonoBehaviour
         point1 = Vector3.zero;
         point2 = Vector3.zero;
         checkPoint = Vector3.zero;
-        Selected = new List<Entity>();
+        Selected = new HashSet<Entity>();
         _camera = Camera.main;
     }
 
@@ -59,7 +59,7 @@ public class TargetManager : MonoBehaviour
             point1 = hitinfo.point;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButton(0))
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(ray, out RaycastHit hitinfo, 200, mask);
@@ -70,36 +70,56 @@ public class TargetManager : MonoBehaviour
         {
             var boxSize = Vector3.zero;
             box.transform.position = (point1 + point2) / 2;
-            box.transform.rotation = Quaternion.Euler(0,_camera.transform.rotation.eulerAngles.y,_camera.transform.rotation.eulerAngles.z);
+            //box.transform.rotation = Quaternion.Euler(0,_camera.transform.rotation.eulerAngles.y,_camera.transform.rotation.eulerAngles.z);
 
+            /*Vector3 dimensions = Vector3.zero;
+            dimensions.x = Mathf.Abs(point2.x - point1.x);
+            dimensions.y = Mathf.Abs(point2.y - point1.y);
+            dimensions.z = Mathf.Abs(point2.z - point1.z);
 
-            var a = (box.transform.position - point1).magnitude * 2;
-            boxSize.x = a;
-            boxSize.y = 20;
-            boxSize.z = (box.transform.position - point1).magnitude * 2;
+            box.transform.position = point1 + dimensions;*/
             
-            /*box.transform.rotation = Quaternion.Euler(0,_camera.transform.rotation.eulerAngles.y,_camera.transform.rotation.eulerAngles.z);
+            
+            /*boxSize.x = Mathf.Abs(box.transform.position.x - point1.x)*2;
+            boxSize.y = 20;
+            boxSize.z = Mathf.Abs(box.transform.position.z - point1.z)*2;*/
+            
+            // /*boxSize = dimensions;*/
+
+            
+            //box.transform.rotation = Quaternion.Euler(0,_camera.transform.rotation.eulerAngles.y,_camera.transform.rotation.eulerAngles.z);
             box.transform.position = (point1 + point2) / 2;
             
             boxSize.x = Mathf.Abs(box.transform.position.x - point1.x)*2;
             boxSize.y = 20;
-            boxSize.z = Mathf.Abs(box.transform.position.z - point1.z)*2;*/
+            boxSize.z = Mathf.Abs(box.transform.position.z - point1.z)*2;
             box.size = boxSize;
             
-            point1 = Vector3.zero;
-            point2 = Vector3.zero;
-
-            foreach (var collider in Physics.OverlapBox(box.transform.position, box.size*2, box.transform.rotation,entityMask))
+            if (!Input.GetMouseButton(0))
             {
-                Selected.Add(collider.GetComponent<Entity>());
+                foreach (var collider in Physics.OverlapBox(box.transform.position, box.size, box.transform.rotation,entityMask))
+                {
+                    Selected.Add(collider.transform.GetComponent<Entity>());
+                }
+                point1 = Vector3.zero;
+                point2 = Vector3.zero;
+                
             }
+            
+
+            
             //box.size = Vector3.zero;
         }
 
-        foreach (var entity in Selected)
+        if (Selected.Count>0)
         {
-            entity.IsSelected(true);
+            Debug.Log(Selected.Count);
+            foreach (var entity in Selected)
+            {
+                entity.IsSelected(true);
+            }
         }
+        
 
         if (Input.GetMouseButtonDown(1))
         {
