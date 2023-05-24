@@ -9,9 +9,10 @@ public class TargetManager : MonoBehaviour
     private Camera _camera;
     public LayerMask mask;
     public LayerMask entityMask;
-    public List<Entity> Selected;
+    public List<Movement> Selected;
     private Vector3 point1;
     private Vector3 point2;
+    private Vector3 checkPoint;
     [SerializeField] private BoxCollider box;
 
     // Start is called before the first frame update
@@ -19,7 +20,8 @@ public class TargetManager : MonoBehaviour
     {
         point1 = Vector3.zero;
         point2 = Vector3.zero;
-        Selected = new List<Entity>();
+        checkPoint = Vector3.zero;
+        Selected = new List<Movement>();
         _camera = Camera.main;
     }
 
@@ -47,6 +49,10 @@ public class TargetManager : MonoBehaviour
         }*/
         if (Input.GetMouseButtonDown(0))
         {
+            foreach (var entity in Selected)
+            {
+                entity.IsSelected(false);
+            }
             Selected.Clear();
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(ray, out RaycastHit hitinfo,200, mask);
@@ -74,9 +80,26 @@ public class TargetManager : MonoBehaviour
 
             foreach (var collider in Physics.OverlapBox(box.transform.position, box.size*2, box.transform.rotation,entityMask))
             {
-                Selected.Add(collider.GetComponent<Entity>());
+                Selected.Add(collider.GetComponent<Movement>());
             }
             box.size = Vector3.zero;
+        }
+
+        foreach (var entity in Selected)
+        {
+            entity.IsSelected(true);
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+            Physics.Raycast(ray, out RaycastHit hitinfo,200, mask);
+            checkPoint = hitinfo.point;
+            foreach (var entity in Selected)
+            {
+                entity.CheckPoint = checkPoint;
+            }
+            checkPoint = Vector3.zero;
         }
     }
 
