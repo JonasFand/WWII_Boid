@@ -9,7 +9,7 @@ public class TargetManager : MonoBehaviour
     private Camera _camera;
     public LayerMask mask;
     public LayerMask entityMask;
-    public List<Movement> Selected;
+    public List<Entity> Selected;
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 checkPoint;
@@ -21,7 +21,7 @@ public class TargetManager : MonoBehaviour
         point1 = Vector3.zero;
         point2 = Vector3.zero;
         checkPoint = Vector3.zero;
-        Selected = new List<Movement>();
+        Selected = new List<Entity>();
         _camera = Camera.main;
     }
 
@@ -68,21 +68,32 @@ public class TargetManager : MonoBehaviour
 
         if (point1 != Vector3.zero && point2 != Vector3.zero)
         {
-            box.transform.rotation = _camera.transform.rotation;
+            var boxSize = Vector3.zero;
             box.transform.position = (point1 + point2) / 2;
-            var boxSize = box.size;
+            box.transform.rotation = Quaternion.Euler(0,_camera.transform.rotation.eulerAngles.y,_camera.transform.rotation.eulerAngles.z);
+
+
+            var a = (box.transform.position - point1).magnitude * 2;
+            boxSize.x = a;
+            boxSize.y = 20;
+            boxSize.z = (box.transform.position - point1).magnitude * 2;
+            
+            /*box.transform.rotation = Quaternion.Euler(0,_camera.transform.rotation.eulerAngles.y,_camera.transform.rotation.eulerAngles.z);
+            box.transform.position = (point1 + point2) / 2;
+            
             boxSize.x = Mathf.Abs(box.transform.position.x - point1.x)*2;
-            boxSize.y = Mathf.Abs(box.transform.position.z - point1.z)*2;
-            boxSize.z = 200;
+            boxSize.y = 20;
+            boxSize.z = Mathf.Abs(box.transform.position.z - point1.z)*2;*/
             box.size = boxSize;
+            
             point1 = Vector3.zero;
             point2 = Vector3.zero;
 
             foreach (var collider in Physics.OverlapBox(box.transform.position, box.size*2, box.transform.rotation,entityMask))
             {
-                Selected.Add(collider.GetComponent<Movement>());
+                Selected.Add(collider.GetComponent<Entity>());
             }
-            box.size = Vector3.zero;
+            //box.size = Vector3.zero;
         }
 
         foreach (var entity in Selected)
@@ -97,7 +108,7 @@ public class TargetManager : MonoBehaviour
             checkPoint = hitinfo.point;
             foreach (var entity in Selected)
             {
-                entity.CheckPoint = checkPoint;
+                entity.Checkpoint = checkPoint;
             }
             checkPoint = Vector3.zero;
         }
