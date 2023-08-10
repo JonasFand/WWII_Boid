@@ -7,6 +7,8 @@ using UnityEngine;
 public class EntityListObj : ScriptableObject
 {
     public List<Entity> entities = new List<Entity>();
+    
+    public Entity Leader = null;
 
     private void Awake()
     {
@@ -16,5 +18,14 @@ public class EntityListObj : ScriptableObject
     private void OnEnable()
     {
         entities.Clear();
+    }
+
+    public void Add(Entity entity)
+    {
+        entities.Add(entity);
+        if (entity.isLeader)
+        {
+            Leader = entity;
+        }
     }
 }

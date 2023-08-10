@@ -84,7 +84,7 @@ public class SwarmBehaviour : MonoBehaviour
             {
                 i++;
                 //tempVector += (Vector2)collider.transform.position - (Vector2)entity.transform.position;
-                tempVector += (col.transform.position - entity.transform.position).normalized*(EvasionMultiplier);
+                tempVector += (col.transform.position - entity.transform.position).normalized * (1/(Vector3.Distance(col.transform.position,entity.transform.position)) * EvasionMultiplier);
             }
             tempVector /= i;
             entity.UnitEvasionVector = tempVector;

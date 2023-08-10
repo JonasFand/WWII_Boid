@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,7 +50,7 @@ public class TargetManager : MonoBehaviour
         }*/
         if (Input.GetMouseButtonDown(0))
         {
-            foreach (var entity in Selected)
+            foreach (var entity in Selected.Where(entity => entity != null))
             {
                 entity.IsSelected(false);
             }
@@ -113,8 +114,7 @@ public class TargetManager : MonoBehaviour
 
         if (Selected.Count>0)
         {
-            Debug.Log(Selected.Count);
-            foreach (var entity in Selected)
+            foreach (var entity in Selected.Where(entity => entity != null))
             {
                 entity.IsSelected(true);
             }
@@ -126,8 +126,9 @@ public class TargetManager : MonoBehaviour
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(ray, out RaycastHit hitinfo,200, mask);
             checkPoint = hitinfo.point;
-            foreach (var entity in Selected)
+            foreach (var entity in Selected.Where(entity => entity != null))
             {
+                
                 entity.Checkpoint = checkPoint;
             }
             checkPoint = Vector3.zero;
@@ -139,7 +140,7 @@ public class TargetManager : MonoBehaviour
         Gizmos.color = Color.green;
         if (Selected.Count>0)
         {
-            foreach (var entity in Selected)
+            foreach (var entity in Selected.Where(entity => entity != null))
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawWireSphere(entity.transform.position,2);

@@ -54,11 +54,20 @@ public class Movement : MonoBehaviour
     void Update()
     {
         //transform.position += transform.forward * (Speed * Time.deltaTime);
-        transform.position += newDirection * (Speed * Time.deltaTime);
-        ManagerSteering();
+        
+        if (Vector3.Distance(transform.position, (transform.position+newDirection * (Speed * Time.deltaTime))) >
+            Vector3.Distance(transform.position, (transform.position+newDirection.normalized * (Speed * Time.deltaTime))))
+        {
+            transform.position += newDirection.normalized * (Speed * Time.deltaTime);
+        }
+        else
+        {
+            transform.position += newDirection * (Speed * Time.deltaTime);
+        }
+        //ManagerSteering();
     }
 
-    void ManagerSteering()
+    /*void ManagerSteering()
     {
         if (timer < 1)
         {
@@ -70,7 +79,7 @@ public class Movement : MonoBehaviour
         }
 
         timer += Time.deltaTime;
-    }
+    }*/
 
     void ApplyNewDirection()
     {
@@ -87,7 +96,7 @@ public class Movement : MonoBehaviour
 
 
         newDirection.y = 0;
-        newDirection.Normalize();
+        //newDirection.Normalize();
         /*startRotation = transform.rotation;
         float angle = Mathf.Atan2(newDirection.y, newDirection.x) * Mathf.Rad2Deg;
         newRotation = Quaternion.AngleAxis(angle, Vector3.up);*/
